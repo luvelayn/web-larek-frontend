@@ -1,5 +1,19 @@
+import { ICustomer } from '../types';
+
 export const API_URL = `${process.env.API_ORIGIN}/api/weblarek`;
 export const CDN_URL = `${process.env.API_ORIGIN}/content/weblarek`;
+
+export const cardActions = {
+	add: 'Купить',
+	remove: 'Удалить из корзины',
+};
+
+export const validationGroups: Record<keyof ICustomer, (keyof ICustomer)[]> = {
+	payment: ['payment', 'address'],
+	address: ['payment', 'address'],
+	email: ['email', 'phone'],
+	phone: ['email', 'phone']
+};
 
 export const AppEvents = {
 	// Model Events

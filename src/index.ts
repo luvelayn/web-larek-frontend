@@ -1,7 +1,7 @@
 import './scss/styles.scss';
 import { EventEmitter } from './components/base/events';
 import { AppApi } from './components/services/AppApi';
-import { API_URL, AppEvents, CDN_URL, settings } from './utils/constants';
+import { API_URL, AppEvents, cardActions, CDN_URL, settings, validationGroups } from './utils/constants';
 import { CatalogModel } from './components/model/CatalogModel';
 import { CustomerModel } from './components/model/CustomerModel';
 import { CartModel } from './components/model/CartModel';
@@ -37,18 +37,6 @@ const modal = new Modal(ensureElement<HTMLElement>(settings.modalSelector), even
 const cart = new Cart(cloneTemplate(cartTemplate), events);
 const orderForm = new OrderForm(cloneTemplate(orderFormTemplate), events);
 const contactsForm = new ContactsForm(cloneTemplate(contactsFormTemplate), events);
-
-const cardActions = {
-	add: 'Купить',
-	remove: 'Удалить из корзины',
-}
-
-const validationGroups: Record<keyof ICustomer, (keyof ICustomer)[]> = {
-	payment: ['payment', 'address'],
-	address: ['payment', 'address'],
-	email: ['email', 'phone'],
-	phone: ['email', 'phone']
-};
 
 events.on(AppEvents.CATALOG_ITEMS_CHANGED, () => {
 	page.gallery = catalogModel.getItems().map((item) => {
@@ -127,13 +115,14 @@ events.on(AppEvents.FORM_FIELD_CHANGE, (data: {field: keyof ICustomer; value: st
 
 events.on(AppEvents.CUSTOMER_CHANGED, (data: {key: keyof ICustomer; value: string}) => {
 	const { key, value } = data;
+	const isValid = customerModel.validate(validationGroups[key]);
+
+	orderForm.valid = isValid;
+	contactsForm.valid = isValid;
 
 	if (key === 'payment') {
 		orderForm.payment = value;
 	}
-
-	orderForm.valid = customerModel.validate(validationGroups[key]);
-	contactsForm.valid = customerModel.validate(validationGroups[key]);
 });
 
 events.on(AppEvents.CUSTOMER_VALIDATION_CHANGED, (errors: IValidationErrors) => {
