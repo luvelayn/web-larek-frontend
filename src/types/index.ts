@@ -1,6 +1,3 @@
-import { data } from 'autoprefixer';
-import { render } from 'sass';
-
 export interface IItem {
   id: string;
 	description: string;
@@ -10,14 +7,14 @@ export interface IItem {
 	price: number | null;
 }
 
-export type ICartItem = Pick<IItem, 'id' | 'title' | 'price'>
-
 export interface ICustomer {
 	payment: 'online' | 'offline' | '';
 	email: string;
 	phone: string;
 	address: string;
 }
+
+export type IValidationErrors = Partial<Record<keyof ICustomer, string>>
 
 export interface IOrder extends ICustomer {
 	total: number;
@@ -29,7 +26,3 @@ export interface IOrderResult {
 	total: number;
 }
 
-export interface IAppApi {
-	getItems(): Promise<IItem[]>;
-	orderItems(order: IOrder): Promise<IOrderResult>;
-}

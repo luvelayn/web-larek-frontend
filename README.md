@@ -6,6 +6,9 @@
 - src/ — исходные файлы проекта
 - src/components/ — папка с JS компонентами
 - src/components/base/ — папка с базовым кодом
+- src/components/view/ — папка с компонентами отображения
+- src/components/model/ — папка с моделями
+- src/components/services/ — папка с сервисами
 
 Важные файлы:
 - src/pages/index.html — HTML-файл главной страницы
@@ -103,11 +106,6 @@ yarn build
 - `category: string` - категория товара
 - `price: number | null` - цена
 
-### ICartItem
-Товар в корзине.
-
-Содержит поля `id`, `title`, `price` из `IItem`.
-
 ### ICustomer
 Данные покупателя для оформления заказа.
 
@@ -132,6 +130,13 @@ yarn build
 - `id: string` - ID созданного заказа
 - `total: number` - итоговая стоимость заказа
 
+### IValidationErrors
+Ошибки валидации.
+
+Поля:
+- все поля `ICustomer`, но значения - строки 
+(сообщения об ошибке)
+
 ### IAppApi
 API интерфейс для работы с приложением.
 
@@ -155,25 +160,25 @@ API интерфейс для работы с приложением.
 - `getItem(id: string): IItem` - получить товар по ID
 
 События:
-- `catalog:changed` - генерируется при вызове `setItems(...)`
+- `CATALOG_ITEMS_CHANGED` - генерируется при вызове `setItems(...)`
 
 ### Класс CartModel
 Хранит список товаров в корзине и отвечает за работу с корзиной. Конструктор принимает
 экземпляр класса брокера событий с интерфейсом `IEvents`.
 
 Поля:
-- `items: ICartItem[]` - список товаров в корзине
+- `items: IItem[]` - список товаров в корзине
 
 Методы:
-- `addItem(item: ICartItem[])` - добавить товар в корзину
+- `addItem(item: IItem)` - добавить товар в корзину
 - `removeItem(id: string)` - удалить товар из корзины
 - `clear()` - очистить корзину
-- `getItems(): ICartItem[]` - получить список товаров в корзине
+- `getItems(): IItem[]` - получить список товаров в корзине
 - `getTotal(): number` - получить общую стоимость товаров в корзине
 - `isInCart(id: string): boolean` - проверить находится ли товар в корзине
 
 События:
-- `cart:changed` - генерируется при вызове `addItem(...)`, `removeItem(...)`
+- `CART_ITEMS_CHANGED` - генерируется при вызове `addItem(...)`, `removeItem(...)`
 и `clear()`
 
 ### Класс CustomerModel
@@ -183,16 +188,18 @@ API интерфейс для работы с приложением.
 Поля:
 - `customer: ICustomer` - данные покупателя, создается по умолчанию
 как объект, в котором все свойства инициализируются пустыми строками
+- `validationErrors: IValidationErrors` - объект с ошибками валидации
 
 Методы:
-- `setData<T extends string>(key: keyof ICustomer, value: T)` - сохранить свойство в объект `customer`
+- `setData<K extends keyof ICustomer>(key: K, value: ICustomer[K])` - сохранить свойство в объект `customer`
 - `clearData()` - очистить данные покупателя (заполнить свойства пустыми строками)
+- `clearValidation()` - очистить ошибки валидации
 - `getData(): ICustomer` - получить данные покупателя
-- `validate(key: keyof ICustomer): boolean` - проверить заполнено ли конкретное свойство
+- `validate(fields?: (keyof ICustomer)[]): boolean` - провалидировать конкретные поля
 
 События:
-- `customer.${key}:changed` - генерируется при вызове `setData(...)`
-- `customer:cleared` - генерируется при вызове `clearData()`
+- `CUSTOMER_CHANGED` - генерируется при вызове `setData(...)`
+- `CUSTOMER_VALIDATION_CHANGED` - генерируется при вызове `validate(...)`
 
 ## Классы слоя представления
 
@@ -200,18 +207,18 @@ API интерфейс для работы с приложением.
 Отвечает за отображение главной страницы, наследует `Component<IPage>`.
 
 Поля для элементов разметки:
-- `_catalog`
+- `_gallery`
 - `_counter`
 - `_cart`
 - `_wrapper`
 
 Тип данных `IPage` содержит следующие поля (устанавливаются в классе `Page` через сеттеры):
 - `counter: number`
-- `catalog: HTMLElement[]`
+- `gallery: HTMLElement[]`
 - `locked: boolean`
 
 События:
-- `cart:open` - генерируется при клике на `_cart`
+- `CART_ICON_CLICK` - генерируется при клике на `_cart`
 
 ### Класс Modal
 Отвечает за отображение модального окна, наследует `Component<IModal>`.
@@ -228,8 +235,8 @@ API интерфейс для работы с приложением.
 - `content: HTMLElement`
 
 События:
-- `modal:open` - генерируется при вызове метода `open()`
-- `modal:close` - генерируется при вызове метода `close()`
+- `MODAL_OPEN` - генерируется при вызове метода `open()`
+- `MODAL_CLOSE` - генерируется при вызове метода `close()`
 
 ### Класс Card\<T extends ICard>
 Абстрактный класс, в котором описываются общие для всех карточек свойства и методы, 
@@ -254,13 +261,16 @@ API интерфейс для работы с приложением.
 - `_category`
 - `_image`
 
+Служебные поля:
+- `_categoryMap` - карта цветов элементов описания
+
 Тип данных `ICatalogCard` расширяет тип `ICard`, добавляя следующие поля 
 (устанавливаются в классе `CatalogCard` через сеттеры):
 - `category: string`
 - `image: string`
 
 События:
-- `card:open` - генерируется при клике на карточку (корневой элемент)
+- `CATALOG_CARD_CLICK` - генерируется при клике на карточку (корневой элемент)
 
 ### Класс PreviewCard
 Наследуется от класса `CatalogCard<IPreviewCard>`, отвечает за отображение карточки в модальном окне (превью).
@@ -275,7 +285,7 @@ API интерфейс для работы с приложением.
 - `buttonText: string`
 
 События:
-- `cart:change` - генерируется при клике на `_button`
+- `PREVIEW_CARD_BUTTON_CLICK` - генерируется при клике на `_button`
 
 ### Класс CartCard
 Наследуется от класса `Card<ICartCard>`, отвечает за отображение карточки в корзине.
@@ -289,39 +299,41 @@ API интерфейс для работы с приложением.
 - `index: number`
 
 События:
-- `cart:change` - генерируется при клике на `_button`
+- `CART_CARD_REMOVE_BUTTON_CLICK` - генерируется при клике на `_removeButton`
 
-### Класс Form\<T extends IForm>
+### Класс Form\<T>
 Абстрактный класс, в котором описываются общие для всех форм свойства и методы,
-наследует `Component<T>`.
+наследует `Component<IForm>`.
 
 Поля для элементов разметки:
 - `_errors`
-- `_submit`
+- `_submitButton`
 
 Тип данных `IForm` содержит следующие поля (устанавливаются в классе `Form` через сеттеры):
 - `valid: boolean`
 - `errors: string[]`
 
+Методы:
+- `onFieldChange(field: keyof T, value: string)` - срабатывает при изменении поля формы
+
 События:
-- `formField:change` - генерируется при изменении поля ввода
-- `${this.container.name}:submit` (где `this.container` - корневой элемент) - генерируется при сабмите
+- `FORM_FIELD_CHANGE` - генерируется при изменении поля формы
+- `${this.container.name}-FORM_SUBMIT` (где `this.container` - корневой элемент) - генерируется при сабмите
 
 ### Класс OrderForm
 Наследуется от `Form<IOrderForm>`, отвечает за отображение формы со способом оплаты и адресом.
 
 Поля для элементов разметки:
-- `_onlineButton`
-- `_offlineButton`
-- `_adress`
+- `_cardButton`
+- `_cashButton`
+- `_address`
 
-Тип данных `IOrderForm` расширяет тип `IForm`, добавляя следующие поля
-(устанавливаются в классе `OrderForm` через сеттеры):
+Тип данных `IOrderForm` содержит следующие поля (устанавливаются в классе `OrderForm` через сеттеры):
 - `payment: 'online' | 'offline' | ''`
-- `adress: string`
+- `address: string`
 
-События:
-- `formField:change` - генерируется при выборе способа оплаты
+Методы:
+- `handlePaymentClick` - коллбэк для обработки нажатия по кнопке выбора метода оплаты
 
 ### Класс ContactsForm
 Наследуется от `Form<IContactsForm>`, отвечает за отображение формы с контактами (электронная почта и телефон).
@@ -330,8 +342,7 @@ API интерфейс для работы с приложением.
 - `_email`
 - `_phone`
 
-Тип данных `IContactsForm` расширяет тип `IForm`, добавляя следующие поля
-(устанавливаются в классе `ContactsForm` через сеттеры):
+Тип данных `IContactsForm` содержит следующие поля (устанавливаются в классе `ContactsForm` через сеттеры):
 - `email: string`
 - `phone: string`
 
@@ -340,7 +351,7 @@ API интерфейс для работы с приложением.
 
 Поля для элементов разметки:
 - `_list`
-- `_button`
+- `_orderButton`
 - `_total`
 
 Тип данных `ICart` содержит следующие поля (устанавливаются в классе `Cart` через сеттеры):
@@ -348,16 +359,17 @@ API интерфейс для работы с приложением.
 - `total: number`
 
 События:
-- `order:open` - генерируется при клике на `_button`
+- `CART_ORDER_BUTTON_CLICK` - генерируется при клике на `_orderButton`
 
 ### Класс Success
 Отвечает за отображение экрана успешного заказа, наследует `Component<ISuccess>`.
 
 Поля для элементов разметки:
-- `_closeButton`
+- `_button`
+- `_total`
 
 Тип данных `ISuccess` содержит следующие поля (устанавливаются в классе `Success` через сеттеры):
 - `total: number`
 
 События:
-- `success:close` - генерируется при клике на `_closeButton`
+- `SUCCESS_BUTTON_CLICK` - генерируется при клике на `_button`
