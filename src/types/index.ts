@@ -8,7 +8,7 @@ export interface IItem {
 }
 
 export interface ICustomer {
-	payment: 'online' | 'offline' | '';
+	payment: 'card' | 'cash' | '';
 	email: string;
 	phone: string;
 	address: string;
