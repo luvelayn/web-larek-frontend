@@ -15,8 +15,14 @@ export abstract class Form<T> extends Component<IForm> {
 	protected constructor(protected container: HTMLFormElement, events: IEvents) {
 		super(container, events);
 
-		this._errors = ensureElement<HTMLElement>(settings.formErrorsSelector, container);
-		this._submitButton = ensureElement<HTMLButtonElement>(settings.submitButtonSelector, container);
+		this._errors = ensureElement<HTMLElement>(
+			settings.formErrorsSelector,
+			container
+		);
+		this._submitButton = ensureElement<HTMLButtonElement>(
+			settings.submitButtonSelector,
+			container
+		);
 
 		this.container.addEventListener('input', (e: Event) => {
 			const target = e.target as HTMLInputElement;
@@ -34,7 +40,7 @@ export abstract class Form<T> extends Component<IForm> {
 	protected onFieldChange(field: keyof T, value: string) {
 		this.events.emit(AppEvents.FORM_FIELD_CHANGE, {
 			field,
-			value
+			value,
 		});
 	}
 
@@ -47,8 +53,8 @@ export abstract class Form<T> extends Component<IForm> {
 	}
 
 	render(data: Partial<T> & IForm) {
-		const {valid, errors, ...fields} = data;
-		super.render({valid, errors});
+		const { valid, errors, ...fields } = data;
+		super.render({ valid, errors });
 		Object.assign(this, fields);
 		return this.container;
 	}

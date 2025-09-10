@@ -13,8 +13,14 @@ export class ContactsForm extends Form<IContactsForm> {
 	constructor(container: HTMLFormElement, events: IEvents) {
 		super(container, events);
 
-		this._email = ensureElement<HTMLInputElement>(settings.contactsEmailSelector, container);
-		this._phone = ensureElement<HTMLInputElement>(settings.contactsPhoneSelector, container);
+		this._email = ensureElement<HTMLInputElement>(
+			settings.contactsEmailSelector,
+			container
+		);
+		this._phone = ensureElement<HTMLInputElement>(
+			settings.contactsPhoneSelector,
+			container
+		);
 	}
 
 	set email(value: string) {

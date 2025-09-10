@@ -12,7 +12,7 @@ export const validationGroups: Record<keyof ICustomer, (keyof ICustomer)[]> = {
 	payment: ['payment', 'address'],
 	address: ['payment', 'address'],
 	email: ['email', 'phone'],
-	phone: ['email', 'phone']
+	phone: ['email', 'phone'],
 };
 
 export const AppEvents = {
@@ -48,7 +48,7 @@ export const AppEvents = {
 	CART_ORDER_BUTTON_CLICK: 'cart:order-button:click',
 
 	// Success Events
-	SUCCESS_BUTTON_CLICK: 'success:button:click'
+	SUCCESS_BUTTON_CLICK: 'success:button:click',
 };
 
 export const settings = {
@@ -61,7 +61,7 @@ export const settings = {
 
 	// Modal
 	modalSelector: '#modal-container',
-	modalCloseSelector:  '.modal__close',
+	modalCloseSelector: '.modal__close',
 	modalContentSelector: '.modal__content',
 	modalActiveClass: 'modal_active',
 

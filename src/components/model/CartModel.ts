@@ -5,8 +5,7 @@ import { AppEvents } from '../../utils/constants';
 export class CartModel {
 	protected items: IItem[] = [];
 
-	constructor(protected events: IEvents) {
-	}
+	constructor(protected events: IEvents) {}
 
 	addItem(item: IItem) {
 		this.items.push(item);
@@ -15,9 +14,7 @@ export class CartModel {
 	}
 
 	removeItem(id: string) {
-		this.items = this.items.filter((item) =>
-			item.id !== id
-		);
+		this.items = this.items.filter((item) => item.id !== id);
 
 		this.events.emit(AppEvents.CART_ITEMS_CHANGED);
 	}
@@ -33,14 +30,10 @@ export class CartModel {
 	}
 
 	getTotal(): number {
-		return this.items.reduce((acc, curr) =>
-			acc + curr.price, 0
-		);
+		return this.items.reduce((acc, curr) => acc + curr.price, 0);
 	}
 
 	isInCart(id: string): boolean {
-		return this.items.findIndex((item) =>
-			item.id === id
-		) !== -1;
+		return this.items.findIndex((item) => item.id === id) !== -1;
 	}
 }

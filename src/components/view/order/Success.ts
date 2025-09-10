@@ -14,8 +14,14 @@ export class Success extends Component<ISuccess> {
 	constructor(container: HTMLElement, events: IEvents) {
 		super(container, events);
 
-		this._button = ensureElement<HTMLButtonElement>(settings.successCloseSelector, container);
-		this._total = ensureElement<HTMLElement>(settings.successTotalSelector, container);
+		this._button = ensureElement<HTMLButtonElement>(
+			settings.successCloseSelector,
+			container
+		);
+		this._total = ensureElement<HTMLElement>(
+			settings.successTotalSelector,
+			container
+		);
 
 		this._button.addEventListener('click', () => {
 			this.events.emit(AppEvents.SUCCESS_BUTTON_CLICK);
@@ -23,6 +29,6 @@ export class Success extends Component<ISuccess> {
 	}
 
 	set total(value: number) {
-		this.setText(this._total,  `Списано ${value} синапсов`);
+		this.setText(this._total, `Списано ${value} синапсов`);
 	}
 }

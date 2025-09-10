@@ -5,8 +5,7 @@ import { AppEvents } from '../../utils/constants';
 export class CatalogModel {
 	protected items: IItem[];
 
-	constructor(protected events: IEvents) {
-	}
+	constructor(protected events: IEvents) {}
 
 	setItems(items: IItem[]) {
 		this.items = items;
@@ -19,6 +18,6 @@ export class CatalogModel {
 	}
 
 	getItem(id: string): IItem {
-		return this.items.find(item => item.id === id);
+		return this.items.find((item) => item.id === id);
 	}
 }

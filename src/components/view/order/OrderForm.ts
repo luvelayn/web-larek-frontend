@@ -14,28 +14,45 @@ export class OrderForm extends Form<IOrderForm> {
 	constructor(container: HTMLFormElement, events: IEvents) {
 		super(container, events);
 
-		this._cardButton = ensureElement<HTMLButtonElement>(settings.orderPayment.cardSelector, container);
-		this._cashButton = ensureElement<HTMLButtonElement>(settings.orderPayment.cashSelector, container);
-		this._address = ensureElement<HTMLInputElement>(settings.orderAddressSelector, container);
+		this._cardButton = ensureElement<HTMLButtonElement>(
+			settings.orderPayment.cardSelector,
+			container
+		);
+		this._cashButton = ensureElement<HTMLButtonElement>(
+			settings.orderPayment.cashSelector,
+			container
+		);
+		this._address = ensureElement<HTMLInputElement>(
+			settings.orderAddressSelector,
+			container
+		);
 
-		this._cardButton.addEventListener('click', this.handlePaymentClick );
-		this._cashButton.addEventListener('click', this.handlePaymentClick );
+		this._cardButton.addEventListener('click', this.handlePaymentClick);
+		this._cashButton.addEventListener('click', this.handlePaymentClick);
 	}
 
-	protected handlePaymentClick  = (e: MouseEvent) => {
+	protected handlePaymentClick = (e: MouseEvent) => {
 		const target = e.target as HTMLInputElement;
 		this.onFieldChange('payment', target.name);
-	}
+	};
 
 	set address(value: string) {
 		this._address.value = value;
 	}
 
 	set payment(value: string) {
-		const isCard = (value === 'card');
-		const isCash = (value === 'cash');
+		const isCard = value === 'card';
+		const isCash = value === 'cash';
 
-		this.toggleClass(this._cardButton, settings.orderPayment.activeClass, isCard);
-		this.toggleClass(this._cashButton, settings.orderPayment.activeClass, isCash);
+		this.toggleClass(
+			this._cardButton,
+			settings.orderPayment.activeClass,
+			isCard
+		);
+		this.toggleClass(
+			this._cashButton,
+			settings.orderPayment.activeClass,
+			isCash
+		);
 	}
 }

@@ -7,20 +7,19 @@ export class CustomerModel {
 		payment: '',
 		email: '',
 		phone: '',
-		address: ''
+		address: '',
 	};
 
 	protected validationErrors: IValidationErrors = {};
 
-	constructor(protected events: IEvents) {
-	}
+	constructor(protected events: IEvents) {}
 
 	setData<K extends keyof ICustomer>(key: K, value: ICustomer[K]) {
 		this.customer[key] = value;
 
 		this.events.emit(AppEvents.CUSTOMER_CHANGED, {
 			key,
-			value
+			value,
 		});
 	}
 
@@ -29,12 +28,8 @@ export class CustomerModel {
 			payment: '',
 			email: '',
 			phone: '',
-			address: ''
+			address: '',
 		};
-	}
-
-	clearValidation() {
-		this.validationErrors = {};
 	}
 
 	getData(): ICustomer {
@@ -43,16 +38,19 @@ export class CustomerModel {
 
 	validate(fields?: (keyof ICustomer)[]) {
 		const validators = {
-			payment: () => !this.customer.payment ? 'Необходимо выбрать способ оплаты' : null,
-			address: () => !this.customer.address ? 'Необходимо указать адрес' : null,
-			email: () => !this.customer.email ? 'Необходимо указать email' : null,
-			phone: () => !this.customer.phone ? 'Необходимо указать телефон' : null,
+			payment: () =>
+				!this.customer.payment ? 'Необходимо выбрать способ оплаты' : null,
+			address: () =>
+				!this.customer.address ? 'Необходимо указать адрес' : null,
+			email: () => (!this.customer.email ? 'Необходимо указать email' : null),
+			phone: () => (!this.customer.phone ? 'Необходимо указать телефон' : null),
 		};
 
-		const fieldsToValidate = fields || (Object.keys(validators) as (keyof ICustomer)[]);
+		const fieldsToValidate =
+			fields || (Object.keys(validators) as (keyof ICustomer)[]);
 		const errors: typeof this.validationErrors = {};
 
-		fieldsToValidate.forEach(field => {
+		fieldsToValidate.forEach((field) => {
 			const errorMessage = validators[field]();
 			if (errorMessage) {
 				errors[field] = errorMessage;

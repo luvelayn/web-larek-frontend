@@ -18,14 +18,26 @@ export class Page extends Component<IPage> {
 	constructor(container: HTMLElement, events: IEvents) {
 		super(container, events);
 
-		this._gallery = ensureElement<HTMLElement>(settings.gallerySelector, container);
-		this._counter = ensureElement<HTMLElement>(settings.cartCounterSelector, container);
-		this._cart = ensureElement<HTMLButtonElement>(settings.cartIconSelector, container);
-		this._wrapper = ensureElement<HTMLElement>(settings.wrapperSelector, container);
+		this._gallery = ensureElement<HTMLElement>(
+			settings.gallerySelector,
+			container
+		);
+		this._counter = ensureElement<HTMLElement>(
+			settings.cartCounterSelector,
+			container
+		);
+		this._cart = ensureElement<HTMLButtonElement>(
+			settings.cartIconSelector,
+			container
+		);
+		this._wrapper = ensureElement<HTMLElement>(
+			settings.wrapperSelector,
+			container
+		);
 
 		this._cart.addEventListener('click', () => {
 			this.events.emit(AppEvents.CART_ICON_CLICK);
-		})
+		});
 	}
 
 	set counter(value: number) {

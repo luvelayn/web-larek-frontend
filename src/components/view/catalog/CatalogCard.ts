@@ -21,14 +21,18 @@ export class CatalogCard<T extends ICatalogCard> extends Card<T> {
 	constructor(container: HTMLElement, events: IEvents) {
 		super(container, events);
 
-		this._category = ensureElement<HTMLElement>(settings.card.categorySelector, container);
-		this._image = ensureElement<HTMLImageElement>(settings.card.imageSelector, container);
+		this._category = ensureElement<HTMLElement>(
+			settings.card.categorySelector,
+			container
+		);
+		this._image = ensureElement<HTMLImageElement>(
+			settings.card.imageSelector,
+			container
+		);
 
 		if (this.container.nodeName === 'BUTTON') {
 			this.container.addEventListener('click', () => {
-				this.events.emit(AppEvents.CATALOG_CARD_CLICK,
-					{ id: this._id }
-				);
+				this.events.emit(AppEvents.CATALOG_CARD_CLICK, { id: this._id });
 			});
 		}
 	}

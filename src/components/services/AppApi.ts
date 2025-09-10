@@ -1,5 +1,5 @@
-import {Api, ApiListResponse} from '../base/api';
-import {IItem, IOrder, IOrderResult} from '../../types'
+import { Api, ApiListResponse } from '../base/api';
+import { IItem, IOrder, IOrderResult } from '../../types';
 
 export interface IAppApi {
 	getItems(): Promise<IItem[]>;
@@ -24,8 +24,6 @@ export class AppApi extends Api implements IAppApi {
 	}
 
 	orderItems(order: IOrder): Promise<IOrderResult> {
-		return this.post('/order', order).then(
-			(data: IOrderResult) => data
-		);
+		return this.post('/order', order).then((data: IOrderResult) => data);
 	}
 }

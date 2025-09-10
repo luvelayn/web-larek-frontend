@@ -16,9 +16,18 @@ export class Cart extends Component<ICart> {
 	constructor(container: HTMLElement, events: IEvents) {
 		super(container, events);
 
-		this._list = ensureElement<HTMLElement>(settings.cartListSelector, container);
-		this._orderButton = ensureElement<HTMLButtonElement>(settings.cartButtonSelector, container);
-		this._total = ensureElement<HTMLElement>(settings.cartPriceSelector, container);
+		this._list = ensureElement<HTMLElement>(
+			settings.cartListSelector,
+			container
+		);
+		this._orderButton = ensureElement<HTMLButtonElement>(
+			settings.cartButtonSelector,
+			container
+		);
+		this._total = ensureElement<HTMLElement>(
+			settings.cartPriceSelector,
+			container
+		);
 
 		this._orderButton.addEventListener('click', () => {
 			this.events.emit(AppEvents.CART_ORDER_BUTTON_CLICK);
@@ -32,9 +41,11 @@ export class Cart extends Component<ICart> {
 			this._list.replaceChildren(...items);
 			this.setDisabled(this._orderButton, false);
 		} else {
-			this._list.replaceChildren(createElement<HTMLParagraphElement>('p', {
-				textContent: 'Корзина пуста'
-			}));
+			this._list.replaceChildren(
+				createElement<HTMLParagraphElement>('p', {
+					textContent: 'Корзина пуста',
+				})
+			);
 			this.setDisabled(this._orderButton, true);
 		}
 	}
