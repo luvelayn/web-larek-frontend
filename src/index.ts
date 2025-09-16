@@ -71,9 +71,13 @@ const contactsForm = new ContactsForm(
 
 events.on(AppEvents.CATALOG_ITEMS_CHANGED, () => {
 	page.gallery = catalogModel.getItems().map((item) => {
-		return new CatalogCard(cloneTemplate(catalogCardTemplate), events).render(
-			item
-		);
+		return new CatalogCard(cloneTemplate(catalogCardTemplate), events).render({
+			id: item.id,
+			title: item.title,
+			price: item.price,
+			category: item.category,
+			image: item.image,
+		});
 	});
 
 	page.counter = cartModel.getItems().length;
@@ -84,10 +88,17 @@ events.on(AppEvents.CATALOG_CARD_CLICK, (card: Pick<IItem, 'id'>) => {
 		? cardActions.remove
 		: cardActions.add;
 
+	const catalogCard = catalogModel.getItem(card.id);
+
 	modal.render({
 		content: new PreviewCard(cloneTemplate(previewCardTemplate), events).render(
 			{
-				...catalogModel.getItem(card.id),
+				id: catalogCard.id,
+				title: catalogCard.title,
+				price: catalogCard.price,
+				category: catalogCard.category,
+				image: catalogCard.image,
+				description: catalogCard.description,
 				buttonText: buttonText,
 			}
 		),
@@ -122,7 +133,9 @@ events.on(AppEvents.CART_ITEMS_CHANGED, () => {
 
 	const cartItems = cartModel.getItems().map((item, index) => {
 		return new CartCard(cloneTemplate(cartCardTemplate), events).render({
-			...item,
+			id: item.id,
+			title: item.title,
+			price: item.price,
 			index: index + 1,
 		});
 	});
